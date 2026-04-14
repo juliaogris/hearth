@@ -35,10 +35,16 @@ PATCH on a path holding a non-object value (scalar, array) returns
 `400`. Returns `200` with the merged result.
 
 **Create:** `POST /data/user/alice/scores` appends a new child to
-the node with a server-generated UUID v7 key. Returns `201` with the
-generated path. The target must be an object (or not exist yet, in
-which case it is created as one). POST to a path holding a scalar
-or array returns `400`.
+the node with a server-generated UUID v7 key. Returns `201` with
+a JSON body containing the key and full path:
+
+```json
+{"key": "019078e4-5c3a-7b2d-8f1e-4a6b9c3d5e7f", "path": "/data/user/alice/scores/019078e4-5c3a-7b2d-8f1e-4a6b9c3d5e7f"}
+```
+
+The target must be an object (or not exist yet, in which case it is
+created as one). POST to a path holding a scalar or array returns
+`400`.
 
 **Delete:** `DELETE /data/user/alice/profile` removes the subtree at
 that path. Returns `204` with no body. Deleting a path that does not
@@ -127,6 +133,15 @@ These constraints keep the query interface implementable by every
 future backend. JSON-on-disk can scan and sort a collection in memory
 (fine for small datasets). SQLite could use an index. Firestore maps
 directly.
+
+## Edge cases
+
+**POST to a node with hand-named children.** Hearth allows it. POST
+to `/data/user/alice/` when alice already has `profile` and `settings`
+children creates a UUID v7 sibling alongside them. This is almost
+certainly a client mistake, but hearth has no collection concept and
+no basis for rejecting the write. The client is responsible for using
+sensible paths.
 
 ## Response cap
 

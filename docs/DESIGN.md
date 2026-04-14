@@ -50,9 +50,13 @@ Queries below. The target must be an object. Query params on a path
 holding a non-object value return `400`. If the path does not exist,
 returns an empty object `{}`.
 
-All paths under `/data/` are user data. Other top-level prefixes are
-reserved for future use (e.g. `/meta/` for schema, `/admin/` for
-management).
+The `/data/` prefix is a namespace separator, not a semantic
+constraint. Hearth stores and retrieves everything under `/data/`
+without interpreting it - the tree structure is up to the client.
+`/data/user/alice/profile`, `/data/questions/XYZ`, and
+`/data/courses/rust-101` are all equally valid. Other top-level
+prefixes are reserved for system endpoints (e.g. `/health`, and
+future `/meta/` or `/admin/`).
 
 A `GET /health` endpoint returns `200` with `{"ok": true}`.
 
@@ -239,6 +243,13 @@ Introduced when there is something to build.
 - **Events / real-time:** Firebase's killer feature is real-time
   subscriptions via WebSocket. Out of scope for v0 but worth keeping
   in mind so the backend trait doesn't preclude it.
+- **Shard depth:** v0 shards by the first segment under `/data/`
+  (depth 1), so everything under `/data/user/` lands in one file
+  and one lock. A depth of 2 would shard by the second segment
+  instead (`alice.json`, `bob.json`), giving better concurrency
+  when many users write simultaneously. This could be a global
+  config option or even per-prefix. Worth considering before the
+  data model solidifies.
 - **Reserved key prefix:** if atomic operations are added later, the
   `_` prefix would be reserved for operation keys (`_increment`,
   `_serverTimestamp`). This means user data could not have keys

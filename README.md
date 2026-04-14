@@ -1,4 +1,4 @@
-# hearth
+# ❤️‍🔥 hearth
 
 A tree-shaped data store addressed by paths.
 

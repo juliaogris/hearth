@@ -40,6 +40,11 @@ JSON-on-disk, with SQLite planned.
 - Compose with [wicket](https://github.com/juliaogris/wicket) for
   auth and path-based access rules
 
+## Docs
+
+- [Design](docs/DESIGN.md) - v0 design document
+- [Learning Rust](docs/learning-rust.md) - step-by-step checklist
+
 ## Development
 
 Requires [just](https://github.com/casey/just) for task running when

@@ -44,7 +44,7 @@ or array returns `400`.
 that path. Returns `204` with no body. Deleting a path that does not
 exist also returns `204` (idempotent).
 
-**Query:** `GET /data/user/alice/scores?orderBy=value&limitToFirst=10`
+**Query:** `GET /data/user/alice/scores?by=value&order=asc&limit=10`
 returns a sorted, filtered subset of the children at the path. See
 Queries below. The target must be an object. Query params on a path
 holding a non-object value return `400`. If the path does not exist,
@@ -109,14 +109,15 @@ element. Arrays are leaf values - you read and write the whole array.
 
 ## Queries
 
-Firebase-style, deliberately limited:
+Firebase-inspired, deliberately limited:
 
-- **orderBy**: one field only. Either a child key name, or the special
-  value `$key` (order by key name). Defaults to `$key` when omitted.
-- **Filter**: `startAt`, `endAt`, `equalTo` - all filter on the same
-  field specified by `orderBy`.
-- **Limit**: `limitToFirst` (ascending from start) or `limitToLast`
-  (descending from end). Not both.
+- **by**: the field to sort by. Either a child key name or the
+  special value `$key` (sort by key name). Defaults to `$key`.
+- **order**: `asc` or `desc`. Defaults to `asc`.
+- **Filter**: `from` (inclusive lower bound), `to` (inclusive upper
+  bound), `eq` (exact match) - all filter on the field specified
+  by `by`.
+- **limit**: max number of results.
 
 These constraints keep the query interface implementable by every
 future backend. JSON-on-disk can scan and sort a collection in memory
@@ -218,7 +219,7 @@ Each step is independently testable and committable.
 4. **REST API** - wire GET/PUT/PATCH/POST/DELETE to the backend trait
    through Axum routes. Path extraction from URL.
 5. **Response cap** - enforce the 1MB limit.
-6. **Queries** - orderBy, filter, limit on collection nodes.
+6. **Queries** - by, order, from/to/eq, limit on collection nodes.
 7. **Config** - environment variable parsing, add `tracing`.
 
 ## Composition with wicket
@@ -275,8 +276,8 @@ an atomic op vs a normal write - options include a `_`-prefixed key
 convention, a separate endpoint, or a content-type header.
 
 **Cursor pagination.** Query responses return a cursor token for the
-next page. The client passes `startAt` with the cursor value plus
-`limitToFirst` to get the next page. Requires stable ordering across
+next page. The client passes `from` with the cursor value plus
+`limit` to get the next page. Requires stable ordering across
 requests and handling of documents deleted between pages.
 
 **Collection schema.** A declaration of which paths are queryable,

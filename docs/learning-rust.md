@@ -86,8 +86,8 @@ inline checks, when to use `Bytes` vs `String`.
 
 ### Step 6: Queries
 
-- [ ] Parse query parameters (`orderBy`, `startAt`, `endAt`,
-  `equalTo`, `limitToFirst`, `limitToLast`)
+- [ ] Parse query parameters (`by`, `order`, `from`, `to`, `eq`,
+  `limit`)
 - [ ] Sort children by the requested field
 - [ ] Apply filters and limits
 - [ ] Return `400` for queries on non-object nodes

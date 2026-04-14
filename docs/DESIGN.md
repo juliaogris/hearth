@@ -99,6 +99,10 @@ Path segments are strings. A segment containing `/` must be
 percent-encoded as `%2F` in the URL. Beyond that, any valid UTF-8
 string is a valid segment.
 
+Object keys are sorted alphabetically in all responses and on-disk
+files. Insertion order is not preserved. This keeps responses
+deterministic and makes the JSON files easier to read and diff.
+
 JSON arrays are valid values but are not individually addressable by
 path. `GET /data/user/alice/tags/0` returns `null`, not the first
 element. Arrays are leaf values - you read and write the whole array.
@@ -108,8 +112,7 @@ element. Arrays are leaf values - you read and write the whole array.
 Firebase-style, deliberately limited:
 
 - **orderBy**: one field only. Either a child key name, or the special
-  values `$key` (order by key name) and `$value` (order by node
-  value, for leaf-node collections).
+  value `$key` (order by key name). Defaults to `$key` when omitted.
 - **Filter**: `startAt`, `endAt`, `equalTo` - all filter on the same
   field specified by `orderBy`.
 - **Limit**: `limitToFirst` (ascending from start) or `limitToLast`

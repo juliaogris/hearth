@@ -290,14 +290,30 @@ Features deferred from v0. The current design does not preclude any
 of these - the per-shard locking and backend trait are the foundation
 they build on.
 
+**Conditional write.** `PUT` with an `If-None-Match: *` header
+creates a value only if the path does not already exist, returning
+`409 Conflict` otherwise. Atomic under the per-shard write lock.
+The primary use case is claiming a unique name (e.g. a username)
+without a race condition. Could land before the full atomic
+operations feature since it is a simple check-then-write under an
+existing lock.
+
 **Atomic operations.** Server-side transforms without the client
 needing to know the current value. Increment a counter, set a server
-timestamp, union/remove from an array, conditional write (optimistic
-concurrency). These are read-modify-write under the existing write
-lock for JSON-on-disk, or native operations for backends that support
-them (SQLite, Firestore). The main design decision is how to signal
-an atomic op vs a normal write - options include a `_`-prefixed key
-convention, a separate endpoint, or a content-type header.
+timestamp, union/remove from an array. These are read-modify-write
+under the existing write lock for JSON-on-disk, or native operations
+for backends that support them (SQLite, Firestore). The main design
+decision is how to signal an atomic op vs a normal write - options
+include a `_`-prefixed key convention, a separate endpoint, or a
+content-type header.
+
+**Secondary indexes.** Hearth does not enforce uniqueness on field
+values. When a record is keyed by ID but needs lookup by a unique
+field (e.g. username), the client maintains a secondary index as a
+separate path: `PUT /data/username/alice {"user": "019078e4-..."}`.
+The conditional write feature protects uniqueness at the index path.
+Multi-path atomic updates (below) would keep the primary record and
+index in sync.
 
 **Cursor pagination.** Query responses return a cursor token for the
 next page. The client passes `from` with the cursor value plus

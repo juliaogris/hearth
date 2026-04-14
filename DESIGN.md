@@ -35,7 +35,7 @@ PATCH on a path holding a non-object value (scalar, array) returns
 `400`. Returns `200` with the merged result.
 
 **Create:** `POST /data/user/alice/scores` appends a new child to
-the node with a server-generated ULID key. Returns `201` with the
+the node with a server-generated UUID v7 key. Returns `201` with the
 generated path. The target must be an object (or not exist yet, in
 which case it is created as one). POST to a path holding a scalar
 or array returns `400`.
@@ -188,7 +188,7 @@ local or trusted-network deployments only.
 
 ## Dependencies
 
-Core: `axum`, `tokio`, `serde`, `serde_json`, `thiserror`, `ulid`.
+Core: `axum`, `tokio`, `serde`, `serde_json`, `thiserror`, `uuid`.
 
 `thiserror` for custom error types with idiomatic `From`
 implementations. `tracing` and `tracing-subscriber` are added in the

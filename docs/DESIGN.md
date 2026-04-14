@@ -341,6 +341,17 @@ is mature.
 an S3 object. Reads served from an in-memory cache, invalidated on
 write.
 
+**Edge deployment.** Run hearth on edge nodes with S3 (or GCS) as
+durable storage. On session start, the user's shard is loaded into
+memory on the edge node. Reads and writes hit local memory. Writes
+flush to object storage asynchronously, with backpressure: if
+unconfirmed writes exceed a threshold (count or bytes), the next
+write blocks until storage confirms. Session affinity at the load
+balancer ensures one edge node owns a shard at a time, avoiding
+multi-writer conflicts without distributed locking. Hearth's
+per-shard model maps naturally - the shard is the unit of loading,
+caching, and eviction.
+
 **Firestore import/export.** Serialise the tree into Firestore's
 document/collection model and back.
 

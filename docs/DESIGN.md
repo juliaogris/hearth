@@ -136,6 +136,11 @@ directly.
 
 ## Edge cases
 
+**UUID v7 leaks creation time.** The first 48 bits of a UUID v7 are
+a millisecond timestamp. Anyone who can read a path can tell when the
+record was created. This is fine for v0 (no auth, trusted network).
+Once wicket gates access, only authorized users see the keys.
+
 **POST to a node with hand-named children.** Hearth allows it. POST
 to `/data/user/alice/` when alice already has `profile` and `settings`
 children creates a UUID v7 sibling alongside them. This is almost

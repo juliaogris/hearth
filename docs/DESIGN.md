@@ -119,6 +119,10 @@ Firebase-inspired, deliberately limited:
   by `by`.
 - **limit**: max number of results.
 
+Children missing the `by` field are skipped. A future `default`
+param could substitute a value for missing fields so they sort into
+a known position instead of being dropped.
+
 These constraints keep the query interface implementable by every
 future backend. JSON-on-disk can scan and sort a collection in memory
 (fine for small datasets). SQLite could use an index. Firestore maps

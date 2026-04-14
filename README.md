@@ -43,6 +43,7 @@ JSON-on-disk, with SQLite planned.
 ## Docs
 
 - [Design](docs/DESIGN.md) - v0 design document
+- [Ideas](docs/ideas.md) - open questions and future extensions
 - [Learning Rust](docs/learning-rust.md) - step-by-step checklist
 
 ## Development

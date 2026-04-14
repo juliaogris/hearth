@@ -32,6 +32,14 @@ they build on.
   backend. This constrains future query additions - hearth cannot
   add query features that Firebase cannot express.
 
+## Method override header
+
+Support `X-HTTP-Method-Override: PATCH` on POST requests as a
+fallback for networks where PATCH is blocked by proxies. An Axum
+middleware rewrites the method before routing. Only applies to POST
+- never override on GET. The client discovers the need by observing
+a failed PATCH, not through auto-negotiation.
+
 ## Conditional write
 
 `PUT` with an `If-None-Match: *` header creates a value only if the
